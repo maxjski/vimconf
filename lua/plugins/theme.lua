@@ -1,0 +1,1 @@
+/home/frieren/.config/omarchy/current/theme/neovim.lua
