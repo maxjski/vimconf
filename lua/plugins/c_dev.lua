@@ -37,7 +37,7 @@ return {
   -- DAP for C with codelldb
   {
     "mfussenegger/nvim-dap",
-    dependencies = { "williamboman/mason.nvim", "jay-babu/mason-nvim-dap.nvim" },
+    dependencies = { "mason-org/mason.nvim", "jay-babu/mason-nvim-dap.nvim" },
     opts = {},
   },
   {
@@ -50,7 +50,7 @@ return {
 
   -- Mason ensure_installed
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = function(_, opts)
       opts.ensure_installed = opts.ensure_installed or {}
       vim.list_extend(opts.ensure_installed, { "clangd", "codelldb", "clang-format" })

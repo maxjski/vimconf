@@ -5,7 +5,7 @@ return {
     ft = { "java" },
     dependencies = {
       "mfussenegger/nvim-dap",
-      "williamboman/mason.nvim",
+      "mason-org/mason.nvim",
     },
     config = function()
       -- This will be loaded when a Java file is opened
@@ -35,7 +35,7 @@ return {
 
   -- Mason ensure_installed for Java tools
   {
-    "williamboman/mason.nvim",
+    "mason-org/mason.nvim",
     opts = function(_, opts)
       opts.ensure_installed = opts.ensure_installed or {}
       vim.list_extend(opts.ensure_installed, {
