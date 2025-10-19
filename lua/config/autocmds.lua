@@ -38,11 +38,17 @@ vim.api.nvim_create_autocmd("FileType", {
     -- Data directory for jdtls workspace storage
     local workspace_dir = vim.fn.stdpath("data") .. "/jdtls-workspace/" .. vim.fn.fnamemodify(root_dir, ":p:h:t")
 
-    -- Get paths for jdtls and dependencies
-    local mason_registry = require("mason-registry")
-    local jdtls_install = mason_registry.get_package("jdtls"):get_install_path()
-    local java_debug_install = mason_registry.get_package("java-debug-adapter"):get_install_path()
-    local java_test_install = mason_registry.get_package("java-test"):get_install_path()
+    -- Get Mason installation paths (Mason installs to stdpath("data")/mason)
+    local mason_path = vim.fn.stdpath("data") .. "/mason/packages"
+    local jdtls_install = mason_path .. "/jdtls"
+    local java_debug_install = mason_path .. "/java-debug-adapter"
+    local java_test_install = mason_path .. "/java-test"
+    
+    -- Check if jdtls is actually installed
+    if vim.fn.isdirectory(jdtls_install) == 0 then
+      vim.notify("jdtls not found. Please install it via :Mason", vim.log.levels.WARN)
+      return
+    end
 
     -- Bundles for debugging and testing
     local bundles = {
@@ -184,7 +190,14 @@ vim.api.nvim_create_autocmd("FileType", {
       require("jdtls.dap").setup_dap_main_class_configs()
     end
 
-    config.capabilities = require("cmp_nvim_lsp").default_capabilities()
+    -- Set capabilities (compatible with blink.cmp used in LazyVim)
+    config.capabilities = vim.lsp.protocol.make_client_capabilities()
+    
+    -- Try to enhance with blink.cmp if available
+    local ok_blink, blink = pcall(require, "blink.cmp")
+    if ok_blink and blink.get_lsp_capabilities then
+      config.capabilities = vim.tbl_deep_extend("force", config.capabilities, blink.get_lsp_capabilities())
+    end
 
     -- Start jdtls
     jdtls.start_or_attach(config)
